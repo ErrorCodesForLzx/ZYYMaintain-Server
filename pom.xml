@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.errorcodes</groupId>
     <artifactId>zyy_maintain</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.15899</version>
     <name>zyy_maintain</name>
     <description>zyy_maintain</description>
 
@@ -55,6 +55,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
         </dependency>
 
         <dependency>
