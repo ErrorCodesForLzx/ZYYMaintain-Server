@@ -1,8 +1,10 @@
 package com.errorcodes.zyy_maintain.controller;
 
 import com.errorcodes.zyy_maintain.entity.RecordPO;
+import com.errorcodes.zyy_maintain.entity.TimeStreamPO;
 import com.errorcodes.zyy_maintain.entity.UserPO;
 import com.errorcodes.zyy_maintain.service.RecordService;
+import com.errorcodes.zyy_maintain.service.TimeStreamService;
 import com.errorcodes.zyy_maintain.service.UserGroupService;
 import com.errorcodes.zyy_maintain.service.UserService;
 import com.errorcodes.zyy_maintain.websocket.WebSocketServerHandler;
@@ -26,6 +28,9 @@ public class RecordController {
     private UserService userService;
     @Autowired
     private UserGroupService userGroupService;
+
+    @Autowired
+    private TimeStreamService timeStreamService;
 
 
     @RequestMapping("/reportMaintenance")
@@ -124,13 +129,19 @@ public class RecordController {
                     recordJSON.put("currentStatus",recordPO.getCurrentStatus());
                     recordJSON.put("createUser",recordPO.getCreateUser());
                     recordJSON.put("imgUrl",recordPO.getImgUrl());
+
                     jsonObject.put("record",recordJSON); // 返回当前通知的工单实体对象
                     jsonObject.put("code",1001);
                     jsonObject.put("notificationMessage","管理员 "+tokenUser.getUsername()+" 已经审批了工单状态，点击查看");
+                    // 发送WS信息
                     WebSocketServerHandler.sendMessageToAllUser(jsonObject.toString());
+                    // 修改事件流
+                    UserPO gotUser = userService.getUserByToken(userToken);
+                    timeStreamService.addTimeStream(Integer.parseInt(rid), gotUser.getUid(),Integer.parseInt(sid));
                 } else {
                     retMap.put("code",500);
                     retMap.put("msg","状态审批失败，服务器内部错误");
+
                 }
             }else {
                 retMap.put("code",205);
@@ -140,6 +151,24 @@ public class RecordController {
             retMap.put("code",405);
             retMap.put("msg","拒绝审批，使用了无效的token");
 
+        }
+        return retMap;
+    }
+
+
+    @RequestMapping("/timeStream")
+    public Map<String,Object> getTimeStream(String rid){
+        Map<String,Object> retMap = new HashMap<>();
+        List<TimeStreamPO> recordTimeStream = timeStreamService.getRecordTimeStream(Integer.parseInt(rid));
+        if (recordTimeStream.size() > 0){
+            // 将获得的集合倒叙，让后面的先显示
+            Collections.reverse(recordTimeStream);
+            retMap.put("code",200);
+            retMap.put("msg","请求成功");
+            retMap.put("stream",recordTimeStream);
+        } else {
+            retMap.put("code",500);
+            retMap.put("msg","查询失败，数据为空");
         }
         return retMap;
     }

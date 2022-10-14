@@ -25,7 +25,11 @@ body,html {
     margin-top: 20px;
 }
 .login-card .login-item {
-    padding: 20px;
-    background: pink;
-    margin: 30px;
+    display: block;
+    padding: 10px;
+    width: 80%;
+    border-radius: 10px;
+    box-sizing: border-box;
+    border: 1px solid #e8e8e8;
+    margin: 30px auto;
 }

@@ -18,4 +18,8 @@
 2. 安装[MySQL](https://www.mysql.com/)数据库
 3. 执行源码里面的数据库脚本：`source data-script.sql`，或使用宝塔面板导入
 4. 执行`mvn package -f pom.xml`，编译jar包。
-5. java -jar 
+5. java -jar
+# 版本更新
+* 修复文件过大上传失败的问题
+* 添加时间线功能
+* 完善数据库关系
